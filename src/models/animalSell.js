@@ -25,6 +25,7 @@ const animal_Sell_Schema = new mongoose.Schema(
     currentMilk: String,
     dailyMilk: String,
     price: String,
+    upload: [String],
   },
 
   { timestamps: true }

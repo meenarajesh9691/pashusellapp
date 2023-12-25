@@ -2,7 +2,13 @@
 const nextConfig = {
   experimental: {
     serverActions: true,
-    serverComponentsExternalPackages: ["mongoose", "twilio", "jsonwebtoken","multer"],
+    serverComponentsExternalPackages: [
+      "mongoose",
+      "twilio",
+      "jsonwebtoken",
+      "multer",
+      "aws-sdk",
+    ],
   },
 };
 
