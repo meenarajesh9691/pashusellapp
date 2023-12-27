@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export const POST = async (req, res, next) => {
   try {
     const { OTP } = await req.json();
+    console.log(OTP)
     const user = await User.findOne({ otp: OTP });
 
     if (!user) {

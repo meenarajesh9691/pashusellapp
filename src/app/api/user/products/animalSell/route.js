@@ -55,7 +55,7 @@ export async function POST(req) {
     const dailyMilk = data.get("dailyMilk");
     const price = data.get("price");
     const file = data.get("upload");
-
+console.log(file)
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -92,4 +92,3 @@ export async function POST(req) {
     );
   }
 }
-

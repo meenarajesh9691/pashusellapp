@@ -1,35 +1,54 @@
-import { Animall_Name } from "@/models/parentCategory";
-import { connectDB } from "@/utils/dbConnect";
-import { NextResponse } from "next/server";
 
-export default async function GET(req, res) {
-  try {
-    const { filterOption } = req.query;
+export async function  GET(req,params) {
+  console.log("first", req)
+  const {
+    brand,
+    condition,
+    size,
+    price,
+    status,
+    title,
+    sort,
+    page = 1,
+    perPage = 10,
+    search,
+  } = req.query;
 
-    await connectDB();
+  const filters = {};
 
-    let filters;
+  if (brand) filters.brand = { $in: brand.split(",") }; // Assuming brand is a comma-separated string
+  if (condition) filters.condition = condition;
+  if (size) filters.size = { $in: size.split(",") }; // Assuming size is a comma-separated string
+  if (price) filters.price = { $lte: parseFloat(price) };
+  if (status) filters.status = status;
+  if (title) filters.title = { $regex: title, $options: "i" };
 
-    if (filterOption) {
-      // If a filter option is provided, use it to filter results
-      filters = await Animall_Name.find({ title: filterOption });
-    } else {
-      // If no filter option is provided, return all filters
-      filters = await Animal_filter.find();
-    }
-
-    return NextResponse.json({
-      filters,
-      message: "Data retrieved successfully",
-    }, {
-      status: 200,
-    });
-  } catch (e) {
-    console.error("Error:", e);
-    return NextResponse.json({
-      message: "An error occurred",
-    }, {
-      status: 500,
-    });
+  if (search) {
+    filters.$or = [
+      { title: { $regex: `.*${search}.*`, $options: "i" } },
+      { brand: { $regex: `.*${search}.*`, $options: "i" } },
+    ];
   }
-}
+
+  const skip = (page - 1) * perPage;
+
+  const sortOptions = {};
+  if (sort === "price_high") {
+    sortOptions.price = -1;
+  } else if (sort === "price_low") {
+    sortOptions.price = 1;
+  }
+
+  const filteredProducts = await Products_Schema.find(filters)
+    .skip(skip)
+    .limit(parseInt(perPage))
+    .sort(sortOptions)
+    .exec();
+
+  res.status(200).json({
+    message: "Filtered Products Successfully!",
+    filteredProducts: filteredProducts,
+    currentPage: page,
+    totalPages: Math.ceil(filteredProducts.length / perPage),
+  });
+};
