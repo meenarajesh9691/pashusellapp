@@ -28,7 +28,7 @@ export const config = {
 const uploadFileToS3 = async (file, fileName) => {
   try {
     const fileBuffer = file;
-    const uniqeName = "AnimalImage_" + Date.now() + path.extname(fileName);
+    const uniqeName = "Sell_Animal_Image_" + Date.now() + path.extname(fileName);
     await s3
       .putObject({
         Bucket: BUCKET_NAME,
@@ -55,7 +55,9 @@ export async function POST(req) {
     const dailyMilk = data.get("dailyMilk");
     const price = data.get("price");
     const file = data.get("upload");
-console.log(file)
+    const longitude = data.get("longitude");
+    const latitude = data.get("latitude");
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -71,12 +73,19 @@ console.log(file)
       dailyMilk,
       price,
       upload: fileDigitalPath,
+      location: {
+        type: "Point",
+        coordinates: [parseFloat(longitude), parseFloat(latitude)],
+      },
     });
 
-    return NextResponse.json({
-      message: "Add Animal_Sell_Details successfully",
-      animal_sell_data,
-    });
+    return NextResponse.json(
+      {
+        message: "Add Animal_Sell_Details successfully",
+        animal_sell_data,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

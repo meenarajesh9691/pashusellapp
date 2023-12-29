@@ -26,10 +26,21 @@ const animal_Sell_Schema = new mongoose.Schema(
     dailyMilk: String,
     price: String,
     upload: [String],
+    location: {
+      type: { type: String, required: true },
+      coordinates: [],
+    },
   },
 
   { timestamps: true }
 );
+
+animal_Sell_Schema.index({ location: "2dsphere" });
+
+
+// await mongoose.connection.db
+//   .collection("Animal_Sell")
+//   .createIndex({ location: "2dsphere" });
 
 export const Animal_Sell =
   mongoose.models.Animal_Sell ||

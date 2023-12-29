@@ -6,7 +6,7 @@ const animall_Category_Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    file: String,
+    upload: String,
   },
 
   { timestamps: true }

@@ -1,16 +1,20 @@
-import { Animall_Name } from "@/models/parentCategory";
+import { Animal_Sell } from "@/models/animalSell";
 import { connectDB } from "@/utils/dbConnect";
 import { NextResponse } from "next/server";
 
-export const GET = async (req) => {
+export const POST = async (req) => {
   try {
+    const { parentCategory_id } = await req.json();
+
     await connectDB();
-    const get_parent_categories = await Animall_Name.find();
+    const get_products_by_parentCategory_id = await Animal_Sell.find({
+      parentCategory_id: parentCategory_id,
+    });
     return NextResponse.json(
       {
         body: {
-          message: "Get All Parent Categories",
-          get_parent_categories,
+          message: "Get All Products BY Parent_id",
+          get_products_by_parentCategory_id,
         },
       },
       { status: 200 }
@@ -21,7 +25,7 @@ export const GET = async (req) => {
     return NextResponse.json(
       {
         body: {
-          message: "Not Get All Parent Categories",
+          message: "Not Get All Products BY Parent_id",
           error: error.message,
         },
       },
