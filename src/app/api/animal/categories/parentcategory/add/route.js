@@ -18,11 +18,11 @@ const s3 = new AWS.S3({
   },
 });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: false,
+//   },
+// };
 
 const uploadFileToS3 = async (file, fileName) => {
   try {
